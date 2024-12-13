@@ -6,8 +6,10 @@ import Dashboard from "../Pages/Dashboard/Dashboard";
 const Home = () => {
   return (
     <>
-      <Navbar />
-      <div className="min-h-screen flex justify-center items-center">
+      <div className="bg-blue-500 mb-10">
+        <Navbar />
+      </div>
+      <div className="min-h-screen flex justify-center items-center max-w-[1280x] mx-auto">
         <Dashboard />
       </div>
       <Footer />

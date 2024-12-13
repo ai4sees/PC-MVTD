@@ -27,13 +27,15 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full mx-5">
       <h2 className="text-center font-bold text-5xl mb-10">
-        This is Dashboard
+        Get Data to Analyse your Machine
       </h2>
-      <button onClick={ParseCSV} className="btn btn-primary text-2xl">
-        Get data
-      </button>
+      <div className="text-center">
+        <button onClick={ParseCSV} className="btn btn-primary text-2xl">
+          Get data
+        </button>
+      </div>
 
       {error && <p className="text-red-500">{error}</p>}
       {/* Display error if any */}
@@ -64,7 +66,7 @@ const Dashboard = () => {
           </table>
         )}
       </div>
-      <div className="w-full">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-5">
         {/* Render TimeVsElementGraph for various metrics */}
         <TimeVsElementGraph
           data={data}

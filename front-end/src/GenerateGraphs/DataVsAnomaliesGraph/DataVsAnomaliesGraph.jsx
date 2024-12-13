@@ -29,7 +29,7 @@ const DataVsAnomaliesGraph = ({
   yLabel,
   normalColor,
 }) => {
-  if (!data || data.length === 0) return <p>No data available</p>;
+  //   if (!data || data.length === 0) return <p>No data available</p>;
 
   // Extract timestamps and filter out null or undefined values
   const timestamps = data.map((d) => d.timestamp || "Unknown");
@@ -39,8 +39,8 @@ const DataVsAnomaliesGraph = ({
     .map((d) => parseFloat(d[property])) // Parse numeric values for the selected property
     .map((value) => (isNaN(value) ? null : value)); // Replace invalid numbers with null
 
-  if (propertyData.every((value) => value === null))
-    return <p>No valid data available</p>;
+  //   if (propertyData.every((value) => value === null))
+  //     return <p>No valid data available</p>;
 
   // Calculate the mean and standard deviation for the valid data points
   const validData = propertyData.filter((value) => value !== null);
@@ -101,12 +101,12 @@ const DataVsAnomaliesGraph = ({
   };
 
   return (
-    <div className="my-5">
+    <div className="min-w-full min-h-[500px]">
       <h3 className="text-xl font-bold text-center mb-4">{label}</h3>
       <Line data={chartData} options={options} />
-      <p className="text-center mt-2">
+      {/* <p className="text-center mt-2">
         Threshold: {lowerThreshold.toFixed(2)} - {upperThreshold.toFixed(2)}
-      </p>
+      </p> */}
     </div>
   );
 };
