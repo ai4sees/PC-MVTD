@@ -105,7 +105,8 @@ const DataVsAnomaliesGraph = ({
       <h3 className="text-xl font-bold text-center mb-4">{label}</h3>
       <Line data={chartData} options={options} />
       {/* <p className="text-center mt-2">
-        Threshold: {lowerThreshold.toFixed(2)} - {upperThreshold.toFixed(2)}
+        Threshold: {isNaN(lowerThreshold) ? "N/A" : lowerThreshold.toFixed(2)} -
+        {isNaN(upperThreshold) ? "N/A" : upperThreshold.toFixed(2)}
       </p> */}
     </div>
   );
