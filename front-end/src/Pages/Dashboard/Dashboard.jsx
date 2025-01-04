@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import TimeVsElementGraph from "../../GenerateGraphs/TimeVsElementGraph/TimeVsElementGraph";
 import DataVsAnomaliesGraph from "../../GenerateGraphs/DataVsAnomaliesGraph/DataVsAnomaliesGraph";
 
@@ -10,15 +10,19 @@ const Dashboard = () => {
   const [streaming, setStreaming] = useState(false);
   const [intervalId, setIntervalId] = useState(null);
   const [lastFetchedIndex, setLastFetchedIndex] = useState(0); // Track the last fetched index
+  const lastFetchedIndexRef = useRef(0);
+  const MAX_ROWS = 600;
 
   // Parse CSV data from backend
   const fetchData = async () => {
     const fileId = "1Xy5X4U-wDxtJhcQEpH8V0H7IGFBgKQqi"; // File ID to send
     const maxRows = 200;
 
+    // console.log('fetching data with last index as', lastFetchedIndex);
+
     try {
       const response = await axios.get(
-        `http://localhost:5000/fetch-csv?fileId=${fileId}&maxRows=${maxRows}&startIndex=${lastFetchedIndex}`,
+        `http://localhost:5000/fetch-csv?fileId=${fileId}&maxRows=${maxRows}&startIndex=${lastFetchedIndexRef.current}`,
         {
           responseType: "text",
         }
@@ -29,10 +33,29 @@ const Dashboard = () => {
         .split("\n")
         .map((line) => JSON.parse(line));
 
+      // console.log(responseData.length)
+
       if (responseData.length > 0) {
-        // Update lastFetchedIndex to track where we are
-        setLastFetchedIndex(lastFetchedIndex + responseData.length);
-        setData((prevData) => [...prevData, ...responseData]);
+        console.log(
+          "Initial value of lastFetchedIndex:",
+          lastFetchedIndexRef.current
+        );
+
+        // Update the ref directly
+        lastFetchedIndexRef.current += responseData.length;
+
+        // console.log('last fetched index is now', lastFetchedIndex+responseData.length);
+        setData((prevData) => {
+          // Update data without creating a new array if possible
+          const combinedData = prevData.concat(responseData);
+
+          if (combinedData.length > MAX_ROWS) {
+            // Remove the oldest rows directly in-place
+            combinedData.splice(0, combinedData.length - MAX_ROWS);
+          }
+
+          return combinedData;
+        });
       }
     } catch (err) {
       setError("Failed to fetch CSV data.");
@@ -41,13 +64,15 @@ const Dashboard = () => {
     }
   };
 
+  // console.log('updated last index', lastFetchedIndex)
+
   // Start streaming when button is clicked
   const handleButtonClick = () => {
     if (!streaming) {
       setLoading(true);
       setStreaming(true);
 
-      const newIntervalId = setInterval(fetchData, 5000); // Start streaming every 5 seconds
+      const newIntervalId = setInterval(fetchData, 3000); // Start streaming every 5 seconds
       setIntervalId(newIntervalId);
     }
   };

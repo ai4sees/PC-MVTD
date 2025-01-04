@@ -14,8 +14,8 @@ app.use(
 );
 
 app.get("/fetch-csv", async (req, res) => {
-  const { fileId, maxRows = 100 } = req.query; // Accept file ID and maxRows from the client
-
+  const { fileId, maxRows = 100, startIndex = 0 } = req.query; // Accept file ID and maxRows from the client
+  // console.log(fileId, maxRows, startIndex);
   if (!fileId) {
     return res.status(400).send("Missing 'fileId' query parameter.");
   }
@@ -39,18 +39,25 @@ app.get("/fetch-csv", async (req, res) => {
     fileResponse.data.pipe(csvStream);
 
     let rowCount = 0;
+    let sentCount = 0;
 
     csvStream
       .pipe(csvParser())
       .on("data", (row) => {
         rowCount++;
-        if (rowCount <= maxRows) {
-          // Send each row as a chunk (JSON string with a newline character)
-          res.write(JSON.stringify(row) + "\n"); // Sending each row as a JSON string
+        // Skip rows until we reach the startIndex
+        if (rowCount <= startIndex) return;
+
+        // Send only up to maxRows rows
+        if (sentCount < maxRows) {
+          res.write(JSON.stringify(row) + "\n");
+          sentCount++;
         }
       })
       .on("end", () => {
-        console.log(`Successfully streamed ${rowCount} rows.`);
+        console.log(
+          `Successfully streamed ${sentCount} rows starting from index ${startIndex}.`
+        );
         res.end(); // End the response when parsing is done
       })
       .on("error", (error) => {
