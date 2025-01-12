@@ -9,7 +9,11 @@ const app = express();
 // CORS setup
 app.use(
   cors({
-    origin: ["http://localhost:5174", "http://localhost:5173"], // Update this with your frontend URL
+    origin: [
+      "http://localhost:5174",
+      "http://localhost:5173",
+      "https://pc-mdtv.netlify.app",
+    ], // Update this with your frontend URL
   })
 );
 

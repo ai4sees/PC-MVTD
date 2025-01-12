@@ -22,7 +22,7 @@ const Dashboard = () => {
 
     try {
       const response = await axios.get(
-        `http://localhost:5000/fetch-csv?fileId=${fileId}&maxRows=${maxRows}&startIndex=${lastFetchedIndexRef.current}`,
+        `https://pcmdtv-backend.vercel.app/fetch-csv?fileId=${fileId}&maxRows=${maxRows}&startIndex=${lastFetchedIndexRef.current}`,
         {
           responseType: "text",
         }
